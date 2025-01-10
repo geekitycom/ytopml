@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { render } from '../libs/render.js'
 import { checkExpires, requireUser } from '../libs/auth.js'
+import { toOpml } from '../libs/opml.js'
 
 import { config } from '../config.js'
 import { logger } from '../logger.js'
@@ -38,7 +39,7 @@ export function createDashboardRouter(google, channelService) {
 			return acc
 		}, 0);
 
-		return c.html(render('channels.njk', { channels, selected }))
+		return c.html(render('channels.njk', { channels, selected, sub: user.sub }))
 	})
 
 	router.post('/channels', async (c) => {
@@ -58,6 +59,14 @@ export function createDashboardRouter(google, channelService) {
 		}
 
 		return c.json({ success: true })
+	})
+
+	router.get('/:sub.opml', async (c) => {
+		const path = c.req.param('sub.opml')
+		const sub = path.split('.')[0]
+		const channels = await channelService.get(sub)
+		logger.debug('opml', { sub, channels })
+		return c.text(toOpml(channels), 200, { 'Content-Type': 'text/xml' })
 	})
 
 	return router;

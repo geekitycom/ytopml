@@ -17,7 +17,8 @@
     "nodemon": "^3.1.9",
     "nunjucks": "^3.2.4",
     "tailwindcss-animate": "^1.0.7",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.17"

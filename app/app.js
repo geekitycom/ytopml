@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { sessionMiddleware } from 'hono-sessions'
 import { SqliteStore } from './libs/sqlite-store.js'
 import Database from 'better-sqlite3'
+import fs from 'fs'
 
 import { createAuthRouter } from './routes/auth.js'
 import { createDashboardRouter } from './routes/dashboard.js'
@@ -9,10 +10,9 @@ import { createDashboardRouter } from './routes/dashboard.js'
 import { ChannelService } from './libs/channels.js'
 import { GoogleProvider } from './libs/google.js'
 
-import { config } from './config.js'
-import { logger } from './logger.js'
-
 const app = new Hono()
+
+fs.mkdirSync('./data', { recursive: true })
 
 const channels = new ChannelService('./data/')
 const google = new GoogleProvider()
