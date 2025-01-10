@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./data:/usr/src/app/data
+    environment:
+      - NODE_ENV=production
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - OIDC_ISSUER_BASE_URL=${OIDC_ISSUER_BASE_URL}
+      - PORT=${PORT}
