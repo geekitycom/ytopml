@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-<div class="min-h-screen p-8 bg-background">
+<div class="min-h-screen p-8">
   <div class="max-w-3xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <div class="flex items-center gap-4">
@@ -13,7 +13,7 @@
           <img src="/icons/file-code.svg" class="w-4 h-4 mr-2" />
           View OPML
         </a>
-        <a href="/logout" class="btn btn-outline">
+        <a href="/auth/logout" class="btn btn-outline">
           <img src="/icons/log-out.svg" class="w-4 h-4 mr-2" />
           Sign Out
         </a>

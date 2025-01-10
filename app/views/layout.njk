@@ -6,9 +6,7 @@
     <title>{{ title | default(config.site.name) }}</title>
     <link href="/css/output.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+<body class="bg-stone-100 text-foreground">
+    {% block content %}{% endblock %}
 </body>
 </html>
