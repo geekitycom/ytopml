@@ -1,0 +1,140 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="min-h-screen p-8 bg-background">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div class="flex items-center gap-4">
+        <img class="w-8 h-8 mx-auto" src="/icons/youtube.svg" />
+        <h1 class="text-2xl font-bold">Your Subscriptions</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="#" class="btn btn-outline">
+        	<img src="/icons/file-code.svg" class="w-4 h-4 mr-2" />
+          <!-- <Download class="w-4 h-4 mr-2" /> -->
+          View OPML
+        </a>
+        <a href="#" class="btn btn-outline">
+        	<img src="/icons/log-out.svg" class="w-4 h-4 mr-2" />
+          <!-- <LogOut class="w-4 h-4 mr-2" /> -->
+          Sign Out
+        </a>
+      </div>
+    </div>
+
+		<div class="space-y-4">
+      <div class="flex justify-between items-center">
+      	<label for="checkall" class="btn btn-outline items-center gap-2">
+      		<input type="checkbox" id="checkall" {% if selected === channels.length %}checked{% endif %} />
+      		<span>{% if selected === channels.length %}Uncheck All{% else %}Check All{% endif %}</span>
+      	</label>
+        <span class="text-sm text-muted-foreground" id="selected-counter">
+          {{ selected }} of {{ channels.length }} selected
+        </span>
+      </div>
+
+			<div class="card divide-y divide-border">
+			  {% for channel in channels %}
+			    <label
+			      for="{{ channel.id }}"
+			      class="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors"
+			    >
+			      <input type="checkbox" id="{{ channel.id }}" {% if channel.selected %}checked{% endif%} />
+			      <div class="flex items-center gap-4 flex-1 min-w-0">
+			        <img
+			          src="{{ channel.thumbnail }}"
+			          alt="{{ channel.title }}"
+			          class="w-10 h-10 rounded-full flex-shrink-0"
+			        />
+			        <div class="flex-1 min-w-0">
+			          <span
+			            class="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+			          >
+			            {{ channel.title }}
+			          </span>
+			          <p class="text-sm text-muted-foreground truncate">
+			            {{ channel.description }}
+			          </p>
+			        </div>
+			      </div>
+			    </label>
+				{% else %}
+				  <div class="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors">
+				  	No channels found.
+				  </div>
+				{% endfor %}
+			</div>
+		</div>
+  </div>
+</div>
+
+<script>
+  // Get all checkboxes including the "Check All" checkbox
+  const checkAllBox = document.getElementById('checkall');
+  const channelCheckboxes = document.querySelectorAll('input[type="checkbox"]:not(#checkall)');
+  const selectedCounter = document.getElementById('selected-counter');
+  
+  // Add debounce timer variable
+  let debounceTimer;
+  
+  function updateOpmlFile() {
+    // Clear any existing timer
+    clearTimeout(debounceTimer);
+    
+    // Set new timer
+    debounceTimer = setTimeout(() => {
+      const checkboxStates = {};
+      channelCheckboxes.forEach(checkbox => {
+        checkboxStates[checkbox.id] = checkbox.checked;
+      });
+      
+      fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(checkboxStates)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .catch(error => {
+        console.error('Error updating selections:', error);
+      });
+    }, 1000); // 1000ms delay
+  }
+
+  // Update the counter when any checkbox changes
+  function updateCounter() {
+    const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkall)').length;
+    const total = channelCheckboxes.length;
+    selectedCounter.textContent = `${checkedCount} of ${total} selected`;
+    
+    // Update "Check All" button text
+    const checkAllLabel = checkAllBox.nextElementSibling;
+    checkAllLabel.textContent = checkedCount === total ? 'Uncheck All' : 'Check All';
+    
+    // Update "Check All" checkbox state without triggering its change event
+    checkAllBox.checked = checkedCount === total;
+
+	updateOpmlFile();
+  }
+
+  // Handle "Check All" checkbox changes
+  checkAllBox.addEventListener('change', (e) => {
+    channelCheckboxes.forEach(checkbox => {
+      checkbox.checked = e.target.checked;
+    });
+    updateCounter();
+  });
+
+  // Handle individual checkbox changes
+  channelCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateCounter);
+  });
+</script>
+
+{% endblock %}
