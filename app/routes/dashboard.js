@@ -20,6 +20,16 @@ export function createDashboardRouter(google, channelService) {
 	  return c.html(render('home.njk'))
 	})
 
+	router.get('/privacy', checkExpires, async (c) => {
+		const title = 'Privacy Policy'
+		return c.html(render('privacy.njk', { title }))
+	})
+
+	router.get('/terms', checkExpires, async (c) => {
+		const title = 'Terms of Use'
+		return c.html(render('terms.njk', { title }))
+	})
+
 	router.get('/channels', requireUser, async (c) => {
 		const session = c.get('session')
 		const tokens = session.get('tokens')

@@ -1,0 +1,95 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center">
+  <div class="max-w-3xl mx-auto space-y-4">
+    <a href="{{ config.oidc.issuerBaseUrl }}/" class="inline-flex items-center text-sm text-primary hover:underline">
+      <img src="/icons/arrow-left.svg" class="w-4 h-4 mr-2" />
+      Back to Home
+    </a>
+
+    <div class="card p-6 md:p-8 space-y-6">
+      <h1 class="text-2xl font-bold">Terms of Use for YouTube OPML</h1>
+      <p class="text-sm text-muted-foreground">Effective Date: March 14, 2024</p>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Introduction</h2>
+        <p>Welcome to YouTube OPML! These Terms of Use ("Terms") govern your access to and use of my application, YouTube OPML ("the App"). By using the App, you agree to these Terms. If you do not agree, do not use the App.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Description of Service</h2>
+        <p>YouTube OPML allows you to export your YouTube subscriptions into an OPML subscription list. The App interacts with the YouTube Data API to provide this functionality.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Eligibility</h2>
+        <p>You must be at least 13 years old (or the age of majority in your jurisdiction) to use the App. By using the App, you represent that you meet this eligibility requirement.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Use of the App</h2>
+        <p>You agree to use the App only for lawful purposes and in compliance with these Terms. You are responsible for any activity that occurs under your use of the App. You agree not to:</p>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>Violate any applicable laws, regulations, or third-party rights</li>
+          <li>Interfere with or disrupt the App or its underlying infrastructure</li>
+          <li>Reverse engineer, decompile, or disassemble the App</li>
+        </ul>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Disclaimer of Affiliation</h2>
+        <p>YouTube OPML is an independent application and is not affiliated with, endorsed by, or sponsored by YouTube, Google LLC, or any of their subsidiaries or affiliates. All trademarks, logos, and brand names are the property of their respective owners. Use of the YouTube API and associated services is governed by YouTube's <a href="https://www.youtube.com/t/terms" class="text-primary hover:underline">Terms of Service</a> and <a href="https://policies.google.com/privacy" class="text-primary hover:underline">Privacy Policy</a>.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Privacy</h2>
+        <p>Your use of the App is subject to my <a href="{{ config.oidc.issuerBaseUrl }}/privacy" class="text-primary hover:underline">Privacy Policy</a>. The Privacy Policy explains how I collect, use, and handle your information when you use the App.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Intellectual Property</h2>
+        <p>All rights, title, and interest in the App, including but not limited to its code, design, and content, are owned by me, Andrew Shell. You may not use, copy, modify, or distribute the App without prior written consent.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Limitation of Liability</h2>
+        <p>To the maximum extent permitted by law, I shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of the App.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Indemnification</h2>
+        <p>You agree to indemnify and hold me harmless from any claims, damages, or expenses arising out of your violation of these Terms or your use of the App.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Termination</h2>
+        <p>I reserve the right to suspend or terminate your access to the App at any time for any reason, including your violation of these Terms.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Changes to These Terms</h2>
+        <p>I may update these Terms from time to time. Any changes will be effective immediately upon posting. By continuing to use the App after changes are posted, you agree to the updated Terms.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Governing Law</h2>
+        <p>These Terms are governed by the laws of Wisconsin, United States, without regard to conflict of law principles.</p>
+      </section>
+
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Contact Information</h2>
+        <p>If you have any questions about these Terms, please contact me at:</p>
+        <p>Email: <a href="mailto:andrew@andrewshell.org" class="text-primary hover:underline">andrew@andrewshell.org</a></p>
+      </section>
+    </div>
+
+    <a href="{{ config.oidc.issuerBaseUrl }}/" class="inline-flex items-center text-sm text-primary hover:underline">
+      <img src="/icons/arrow-left.svg" class="w-4 h-4 mr-2" />
+      Back to Home
+    </a>
+  </div>
+
+  {% include "footer.njk" %}
+</div>
+{% endblock %}

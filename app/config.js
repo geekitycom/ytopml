@@ -6,6 +6,7 @@ export const config = {
   site: {
     name: process.env.SITE_NAME ?? 'YouTube OPML',
     description: process.env.SITE_DESCRIPTION ?? 'Generate an OPML subscription list of your YouTube subscriptions.',
+    year: new Date().getFullYear(),
   },
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,

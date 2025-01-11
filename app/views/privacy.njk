@@ -1,0 +1,70 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center">
+    <div class="max-w-3xl mx-auto space-y-4">
+    <a href="{{ config.oidc.issuerBaseUrl }}/" class="inline-flex items-center text-sm text-primary hover:underline">
+        <img src="/icons/arrow-left.svg" class="w-4 h-4 mr-2" />
+        Back to Home
+    </a>
+
+    <div class="card p-6 md:p-8 space-y-6">
+        <h1 class="text-2xl font-bold">Privacy Policy for YouTube OPML</h1>
+        <p class="text-sm text-muted-foreground">Effective Date: March 14, 2024</p>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Introduction</h2>
+        <p>I'm Andrew Shell, an independent developer committed to protecting your privacy. This Privacy Policy explains how I collect, use, and handle the information you provide while using my app.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Information I Collect</h2>
+        <p>I collect the list of YouTube channels you subscribe to when you explicitly grant access via the YouTube Data API. No other personal data is collected, stored, or used by my app.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">How I Use the Collected Information</h2>
+        <p>The information you provide is used solely to generate an OPML subscription list of your YouTube channels. I do not use your data for any other purposes.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Cookies and Tracking Technologies</h2>
+        <p>I use cookies solely for maintaining user sessions while you interact with my app. No tracking technologies are used for analytics or advertising.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Data Sharing</h2>
+        <p>I do not share your data with any third parties.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">User Rights</h2>
+        <p>Since no personal data is stored, you do not need to request access, deletion, or modification of your data.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Compliance with Privacy Laws</h2>
+        <p>My app adheres to best practices for data privacy and security. If you have specific concerns regarding privacy regulations such as GDPR or CCPA, please contact me.</p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Contact Information</h2>
+        <p>If you have any questions or concerns regarding this Privacy Policy or my data practices, please contact me at:</p>
+        <p>Email: <a href="mailto:andrew@andrewshell.org" class="text-primary hover:underline">andrew@andrewshell.org</a></p>
+        </section>
+
+        <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Changes to This Privacy Policy</h2>
+        <p>I may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated effective date.</p>
+        </section>
+    </div>
+
+    <a href="{{ config.oidc.issuerBaseUrl }}/" class="inline-flex items-center text-sm text-primary hover:underline">
+        <img src="/icons/arrow-left.svg" class="w-4 h-4 mr-2" />
+        Back to Home
+    </a>
+    </div>
+
+    {% include "footer.njk" %}
+</div>
+{% endblock %}
