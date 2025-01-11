@@ -710,6 +710,10 @@ body {
   cursor: pointer;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .items-center {
   align-items: center;
 }
@@ -801,6 +805,10 @@ body {
 
 .p-8 {
   padding: 2rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
 }
 
 .text-center {
@@ -949,4 +957,14 @@ body {
 
 .peer:disabled ~ .peer-disabled\:opacity-70 {
   opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+  .md\:flex-row {
+    flex-direction: row;
+  }
+
+  .md\:p-8 {
+    padding: 2rem;
+  }
 }

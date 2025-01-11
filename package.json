@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "license": "GPL-3.0-only",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Andrew Shell <andrew@andrewshell.org",
   "homepage": "https://github.com/andrewshell/ytopml",
   "repository": {
@@ -11,11 +11,11 @@
     "url": "git+https://github.com/andrewshell/ytopml.git"
   },
   "scripts": {
-    "start": "LOG_LEVEL=debug nodemon app/server.js",
+    "start": "nodemon app/server.js",
+    "debug": "LOG_LEVEL=debug nodemon app/server.js",
     "css": "npx tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
     "docker-push": "node build-docker.js"
   },
-  "private": true,
   "dependencies": {
     "@hono/node-server": "^1.13.7",
     "better-sqlite3": "^11.7.2",
