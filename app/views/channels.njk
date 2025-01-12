@@ -9,12 +9,16 @@
         <h1 class="text-2xl font-bold">YouTube OPML</h1>
       </div>
       <div class="flex items-center gap-2">
-        <a href="/{{ sub }}.opml" class="btn btn-outline">
-          <img src="/icons/file-code.svg" class="w-4 h-4 mr-2" />
+        <a href="{{ config.oidc.issuerBaseUrl }}/settings">
+          <img src="/icons/settings.svg" class="w-4 h-4 mr-2" title="Delete Account" />
+          <span class="sr-only">Delete Account</span>
+        </a>
+        <a href="{{ config.oidc.issuerBaseUrl }}/{{ sub }}.opml" class="btn btn-outline">
+          <img src="/icons/file-code.svg" class="w-4 h-4 mr-2" aria-hidden="true" />
           View OPML
         </a>
-        <a href="/auth/logout" class="btn btn-outline">
-          <img src="/icons/log-out.svg" class="w-4 h-4 mr-2" />
+        <a href="{{ config.oidc.issuerBaseUrl }}/auth/logout" class="btn btn-outline">
+          <img src="/icons/log-out.svg" class="w-4 h-4 mr-2" aria-hidden="true" />
           Sign Out
         </a>
       </div>

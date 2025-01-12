@@ -591,6 +591,18 @@ body {
   color: hsl(var(--foreground));
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -893,6 +905,15 @@ body {
 
 .btn-primary:hover {
   background-color: hsl(var(--primary) / 0.9);
+}
+
+.btn-danger {
+  background-color: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+}
+
+.btn-danger:hover {
+  background-color: hsl(var(--destructive) / 0.9);
 }
 
 .btn-outline {

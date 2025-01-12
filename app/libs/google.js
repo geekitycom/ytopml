@@ -25,6 +25,10 @@ export class GoogleProvider {
     this.lastChecked = {}
   }
 
+  destroy(id) {
+    delete this.lastChecked[id]
+  }
+
   getAuthorizationUrl(state) {
     return this.oauth2.generateAuthUrl({
       // 'online' (default) or 'offline' (gets refresh_token)

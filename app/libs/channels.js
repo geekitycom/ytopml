@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile, writeFile, unlink } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { logger } from '../logger.js'
@@ -30,10 +30,15 @@ export class ChannelService {
 
 	async get(id) {
 		try {
+			if (null == id) {
+				throw new Error('id is required')
+			}
 			const filename = resolve(this.dataDir, `${id}.json`)
 			return JSON.parse(await readFile(filename, 'utf8'))
 		} catch (error) {
-			logger.error(error)
+			if (error.code !== 'ENOENT') {
+				logger.error(error)
+			}
 			return []
 		}
 	}
@@ -52,7 +57,6 @@ export class ChannelService {
 			}
 			return []
 		} catch (error) {
-			logger.error(error)
 			return []
 		}
 	}
@@ -65,6 +69,17 @@ export class ChannelService {
 		} catch (error) {
 			logger.error(error)
 			return []
+		}
+	}
+
+	async destroy(id) {
+		try {
+			const filename = resolve(this.dataDir, `${id}.json`)
+			await unlink(filename)
+			return true
+		} catch (error) {
+			logger.error(error)
+			return false
 		}
 	}
 }

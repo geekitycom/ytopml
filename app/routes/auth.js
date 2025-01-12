@@ -11,7 +11,7 @@ export function createAuthRouter(google) {
   // Login page
   router.get('/login', async (c) => {
   	const session = c.get('session')
-  	logger.debug({ message: 'GET /login', session })
+  	logger.debug({ message: 'GET /auth/login', session })
 
   	session.set('state', crypto.randomBytes(32).toString('hex'))
 
@@ -22,7 +22,7 @@ export function createAuthRouter(google) {
   // Logout page
   router.get('/logout', async (c) => {
     const session = c.get('session')
-    logger.debug({ message: 'GET /logout', session })
+    logger.debug({ message: 'GET /auth/logout', session })
 
     session && session.deleteSession()
 
@@ -32,7 +32,7 @@ export function createAuthRouter(google) {
   // OAuth 2.0 callback handler
   router.get('/callback', async (c) => {
   	const session = c.get('session')
-    logger.debug({ message: 'GET /callback', query: c.req.query(), session: session })
+    logger.debug({ message: 'GET /auth/callback', query: c.req.query(), session: session })
 
     if (c.req.query('error')) {
       return c.json({ error: c.req.query('error') }, 400)

@@ -89,7 +89,11 @@
 }
 
 .btn-primary {
-	@apply bg-primary text-primary-foreground hover:bg-primary/90;
+  @apply bg-primary text-primary-foreground hover:bg-primary/90;
+}
+
+.btn-danger {
+  @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
 }
 
 .btn-outline {
