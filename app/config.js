@@ -4,7 +4,7 @@ dotenv.config();
 
 export const config = {
   site: {
-    name: process.env.SITE_NAME ?? 'YouTube OPML',
+    name: process.env.SITE_NAME ?? 'YT OPML',
     description: process.env.SITE_DESCRIPTION ?? 'Generate an OPML subscription list of your YouTube subscriptions.',
     year: new Date().getFullYear(),
   },
