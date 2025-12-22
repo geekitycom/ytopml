@@ -104,8 +104,8 @@ export class GoogleProvider {
         a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
       );
     } catch (error) {
-      console.debug('tokens', { tokens })
-      console.error('Error fetching subscriptions:', error)
+      logger.debug({ message: 'Error fetching subscriptions', hasTokens: !!tokens })
+      logger.error({ message: 'Error fetching subscriptions', error: error.message })
       throw error
     }
   }
