@@ -64,7 +64,7 @@ export function createDashboardRouter(google, channelService) {
 		return c.html(render('channels.njk', { channels, selected, sub: user.sub }))
 	})
 
-	router.post('/channels', async (c) => {
+	router.post('/channels', requireUser, async (c) => {
 		logger.debug({ message: 'POST /channels' })
 		const session = c.get('session')
 		const user = session.get('user')
