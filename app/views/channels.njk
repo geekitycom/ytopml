@@ -49,11 +49,12 @@
 			          class="w-10 h-10 rounded-full flex-shrink-0"
 			        />
 			        <div class="flex-1 min-w-0">
-			          <span
-			            class="block text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-			          >
+			          <a href="{{ channel.htmlUrl }}"
+			             target="_blank"
+			             class="block text-sm font-medium leading-none hover:underline"
+			             onclick="event.stopPropagation()">
 			            {{ channel.title }}
-			          </span>
+			          </a>
 			          <p class="text-sm text-muted-foreground truncate">
 			            {{ channel.description }}
 			          </p>

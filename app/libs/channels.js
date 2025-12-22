@@ -8,6 +8,13 @@ function channelIndex(channels) {
 		if (null == channel.selected) {
 			channel.selected = true
 		}
+		// Backfill htmlUrl from feedUrl for existing channels
+		if (!channel.htmlUrl && channel.feedUrl) {
+			const channelId = channel.feedUrl.split('channel_id=')[1]
+			if (channelId) {
+				channel.htmlUrl = `https://www.youtube.com/channel/${channelId}`
+			}
+		}
 		acc[channel.id] = channel
 		acc._delete.add(channel.id)
 		return acc
@@ -34,7 +41,17 @@ export class ChannelService {
 				throw new Error('id is required')
 			}
 			const filename = resolve(this.dataDir, `${id}.json`)
-			return JSON.parse(await readFile(filename, 'utf8'))
+			const channels = JSON.parse(await readFile(filename, 'utf8'))
+			// Backfill htmlUrl for existing channels
+			channels.forEach(channel => {
+				if (!channel.htmlUrl && channel.feedUrl) {
+					const channelId = channel.feedUrl.split('channel_id=')[1]
+					if (channelId) {
+						channel.htmlUrl = `https://www.youtube.com/channel/${channelId}`
+					}
+				}
+			})
+			return channels
 		} catch (error) {
 			if (error.code !== 'ENOENT') {
 				logger.error(error)

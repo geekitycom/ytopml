@@ -92,6 +92,7 @@ export class GoogleProvider {
           description: channel?.snippet?.description,
           thumbnail: channel?.snippet?.thumbnails?.default?.url,
           feedUrl: `https://www.youtube.com/feeds/videos.xml?channel_id=${channel?.snippet?.resourceId?.channelId}`,
+          htmlUrl: `https://www.youtube.com/channel/${channel?.snippet?.resourceId?.channelId}`,
         }))];
 
         pageToken = response.data.nextPageToken;
