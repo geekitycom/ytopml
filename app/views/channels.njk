@@ -76,21 +76,22 @@
   const checkAllBox = document.getElementById('checkall');
   const channelCheckboxes = document.querySelectorAll('input[type="checkbox"]:not(#checkall)');
   const selectedCounter = document.getElementById('selected-counter');
-  
+  const feedContainer = document.querySelector('.card.divide-y');
+
   // Add debounce timer variable
   let debounceTimer;
-  
+
   function updateOpmlFile() {
     // Clear any existing timer
     clearTimeout(debounceTimer);
-    
+
     // Set new timer
     debounceTimer = setTimeout(() => {
       const checkboxStates = {};
       channelCheckboxes.forEach(checkbox => {
         checkboxStates[checkbox.id] = checkbox.checked;
       });
-      
+
       fetch(window.location.href, {
         method: 'POST',
         headers: {
@@ -110,20 +111,57 @@
     }, 1000); // 1000ms delay
   }
 
+  // Move a feed item to its correct position based on selection status
+  function moveToPosition(checkbox) {
+    const label = checkbox.closest('label');
+    const labels = Array.from(feedContainer.querySelectorAll('label'));
+    const isChecked = checkbox.checked;
+    const title = label.querySelector('.font-medium').textContent.trim();
+
+    // Find the correct position
+    let insertBefore = null;
+    for (const otherLabel of labels) {
+      if (otherLabel === label) continue;
+      const otherCheckbox = otherLabel.querySelector('input[type="checkbox"]');
+      const otherChecked = otherCheckbox.checked;
+      const otherTitle = otherLabel.querySelector('.font-medium').textContent.trim();
+
+      // If we're checked and they're not, we go before them
+      if (isChecked && !otherChecked) {
+        insertBefore = otherLabel;
+        break;
+      }
+      // If same selection state, sort alphabetically
+      if (isChecked === otherChecked) {
+        if (title.localeCompare(otherTitle, undefined, { sensitivity: 'base' }) < 0) {
+          insertBefore = otherLabel;
+          break;
+        }
+      }
+      // If we're unchecked and they're checked, keep looking
+    }
+
+    if (insertBefore) {
+      feedContainer.insertBefore(label, insertBefore);
+    } else {
+      feedContainer.appendChild(label);
+    }
+  }
+
   // Update the counter when any checkbox changes
   function updateCounter() {
     const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked:not(#checkall)').length;
     const total = channelCheckboxes.length;
     selectedCounter.textContent = `${checkedCount} of ${total} selected`;
-    
+
     // Update "Check All" button text
     const checkAllLabel = checkAllBox.nextElementSibling;
     checkAllLabel.textContent = checkedCount === total ? 'Uncheck All' : 'Check All';
-    
+
     // Update "Check All" checkbox state without triggering its change event
     checkAllBox.checked = checkedCount === total;
 
-	updateOpmlFile();
+    updateOpmlFile();
   }
 
   // Handle "Check All" checkbox changes
@@ -131,12 +169,28 @@
     channelCheckboxes.forEach(checkbox => {
       checkbox.checked = e.target.checked;
     });
+    // Re-sort all items after check all/uncheck all
+    const labels = Array.from(feedContainer.querySelectorAll('label'));
+    labels.sort((a, b) => {
+      const aChecked = a.querySelector('input[type="checkbox"]').checked;
+      const bChecked = b.querySelector('input[type="checkbox"]').checked;
+      if (aChecked !== bChecked) {
+        return aChecked ? -1 : 1;
+      }
+      const aTitle = a.querySelector('.font-medium').textContent.trim();
+      const bTitle = b.querySelector('.font-medium').textContent.trim();
+      return aTitle.localeCompare(bTitle, undefined, { sensitivity: 'base' });
+    });
+    labels.forEach(label => feedContainer.appendChild(label));
     updateCounter();
   });
 
   // Handle individual checkbox changes
   channelCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', updateCounter);
+    checkbox.addEventListener('change', () => {
+      moveToPosition(checkbox);
+      updateCounter();
+    });
   });
 </script>
 

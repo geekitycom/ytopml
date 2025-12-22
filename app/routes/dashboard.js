@@ -39,7 +39,7 @@ export function createDashboardRouter(google, channelService) {
 		const tokens = session.get('tokens')
 		const user = session.get('user')
 		let channels = []
-		
+
 		try {
 			const fresh = await google.getChannels(tokens)
 			channels = await channelService.merge(user.sub, fresh)
@@ -47,6 +47,14 @@ export function createDashboardRouter(google, channelService) {
 		} catch (error) {
 			channels = await channelService.get(user.sub)
 		}
+
+		// Sort: selected first, then alphabetically by title
+		channels.sort((a, b) => {
+			if (a.selected !== b.selected) {
+				return a.selected ? -1 : 1
+			}
+			return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+		})
 
 		const selected = channels.reduce((acc, channel) => {
 			acc += channel.selected ? 1 : 0
