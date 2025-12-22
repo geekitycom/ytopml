@@ -68,12 +68,20 @@ export function createDashboardRouter(google, channelService) {
 		logger.debug({ message: 'POST /channels' })
 		const session = c.get('session')
 		const user = session.get('user')
-		
+
 		try {
-			const channels = await channelService.get(user.sub)
 			const selected = await c.req.json()
+
+			// Validate input is an object with boolean values
+			if (typeof selected !== 'object' || selected === null || Array.isArray(selected)) {
+				return c.json({ error: 'Invalid input: expected object' }, 400)
+			}
+
+			const channels = await channelService.get(user.sub)
 			channels.forEach(channel => {
-				channel.selected = selected[channel.id]
+				if (typeof selected[channel.id] === 'boolean') {
+					channel.selected = selected[channel.id]
+				}
 			})
 			await channelService.save(user.sub, channels)
 		} catch (error) {
