@@ -13,7 +13,7 @@
   "scripts": {
     "start": "nodemon app/server.js",
     "debug": "LOG_LEVEL=debug nodemon app/server.js",
-    "css": "npx tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
+    "css": "tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
     "docker-push": "node build-docker.js"
   },
   "dependencies": {
@@ -38,5 +38,11 @@
       "data/*"
     ],
     "ext": "js,njk"
+  },
+  "packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
   }
 }
