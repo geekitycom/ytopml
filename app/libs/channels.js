@@ -19,7 +19,7 @@ function mergeChannel(index, channel) {
 		index._delete.delete(channel.id)
 	} else {
 		index[channel.id] = channel
-		index[channel.id].selected = true
+		index[channel.id].selected = false
 	}
 }
 
