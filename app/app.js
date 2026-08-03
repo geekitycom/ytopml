@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { sessionMiddleware } from 'hono-sessions'
 import { SqliteStore } from './libs/sqlite-store.js'
-import Database from 'better-sqlite3'
+import { DatabaseSync } from 'node:sqlite'
 import fs from 'fs'
 
 import { createAuthRouter } from './routes/auth.js'
@@ -17,7 +17,7 @@ fs.mkdirSync('./data', { recursive: true })
 const channels = new ChannelService('./data/')
 const google = new GoogleProvider()
 
-const db = new Database('data/sessions.db')
+const db = new DatabaseSync('data/sessions.db')
 const store = new SqliteStore(db)
 
 app.use('*', sessionMiddleware({ store }))

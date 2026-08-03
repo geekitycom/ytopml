@@ -1,6 +1,14 @@
-import dotenv from 'dotenv';
 import crypto from 'crypto';
-dotenv.config();
+
+// Unlike dotenv.config(), loadEnvFile throws when there is no .env — which is
+// the normal case in Docker, where the environment is supplied by compose.
+try {
+  process.loadEnvFile();
+} catch (error) {
+  if (error.code !== 'ENOENT') {
+    throw error;
+  }
+}
 
 export const config = {
   site: {

@@ -1,14 +1,6 @@
 # Use an official Node.js runtime as the base image
 FROM node:24-slim
 
-# Install build dependencies for native modules
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 # Enable corepack for pnpm
 RUN corepack enable
 

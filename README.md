@@ -8,6 +8,9 @@ See https://developers.google.com/youtube/v3/getting-started
 
 ## Installation
 
+Requires Node.js 24 or later — sessions use the built-in `node:sqlite` module and
+config loading uses `process.loadEnvFile()`.
+
 ```bash
 npm install
 cp .env.example .env
