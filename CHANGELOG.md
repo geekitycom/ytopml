@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.1](https://github.com/geekitycom/ytopml/compare/v1.4.0...v1.4.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* add a node shebang to build-docker.js ([f6d7efb](https://github.com/geekitycom/ytopml/commit/f6d7efb90aa07697a15e2cb9778b511dd9bab669))
+* force a consent screen so added scopes are actually granted ([ba50a40](https://github.com/geekitycom/ytopml/commit/ba50a4046ce81754b57b0df71092b5433eedfc10))
+* listen on the configured PORT ([8258a51](https://github.com/geekitycom/ytopml/commit/8258a51907dfcb539095bbf51832ceca54984b39))
+* log when a channel sync falls back to stored data ([dd75c85](https://github.com/geekitycom/ytopml/commit/dd75c851fcdb62ee4c4255a4aa29a22d5781256f))
+* require a signed in user to delete an account ([fdef8d5](https://github.com/geekitycom/ytopml/commit/fdef8d51ae85290aad78fb7fa3894b83238bc264))
+* stop a failed merge from erasing stored channels ([c9ca0d3](https://github.com/geekitycom/ytopml/commit/c9ca0d30c41fe6be6e317068d224b04bbceb5ea5))
+
 ## [1.4.0](https://github.com/geekitycom/ytopml/compare/v1.3.0...v1.4.0) (2026-08-03)
 
 
