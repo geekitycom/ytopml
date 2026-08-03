@@ -2,9 +2,21 @@ import { Hono } from 'hono'
 import { render } from '../libs/render.js'
 import { checkExpires, requireUser } from '../libs/auth.js'
 import { toOpml } from '../libs/opml.js'
+import { ping } from '../libs/rsscloud.js'
 
 import { config } from '../config.js'
 import { logger } from '../logger.js'
+
+// Only a change to the published OPML is worth a ping — selecting a channel
+// that was already selected, or picking up a new unselected subscription,
+// leaves the file identical.
+function pingIfChanged(sub, before, after) {
+	if (before === toOpml(after)) {
+		return
+	}
+	// Deliberately not awaited: the cloud server must not slow down a save.
+	ping(sub)
+}
 
 export function createDashboardRouter(google, channelService) {
 	const router = new Hono()
@@ -41,9 +53,11 @@ export function createDashboardRouter(google, channelService) {
 		let channels = []
 
 		try {
+			const before = toOpml(await channelService.get(user.sub))
 			const fresh = await google.getChannels(tokens)
 			channels = await channelService.merge(user.sub, fresh)
 			await channelService.save(user.sub, channels)
+			pingIfChanged(user.sub, before, channels)
 		} catch (error) {
 			channels = await channelService.get(user.sub)
 		}
@@ -78,12 +92,14 @@ export function createDashboardRouter(google, channelService) {
 			}
 
 			const channels = await channelService.get(user.sub)
+			const before = toOpml(channels)
 			channels.forEach(channel => {
 				if (typeof selected[channel.id] === 'boolean') {
 					channel.selected = selected[channel.id]
 				}
 			})
 			await channelService.save(user.sub, channels)
+			pingIfChanged(user.sub, before, channels)
 		} catch (error) {
 			logger.error(error)
 			return c.json({ error: 'Failed to save channels' }, 500)
@@ -103,8 +119,11 @@ export function createDashboardRouter(google, channelService) {
 		const user = session.get('user')
 
 		try {
+			const before = toOpml(await channelService.get(user.sub))
 			await channelService.destroy(user.sub)
 			google.destroy(user.sub)
+			// The list is now empty; subscribers should be told it emptied.
+			pingIfChanged(user.sub, before, [])
 			return c.redirect(`${config.oidc.issuerBaseUrl}/auth/logout`)
 		} catch (error) {
 			logger.error(error)

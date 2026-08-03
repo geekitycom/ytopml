@@ -19,5 +19,19 @@ export const config = {
     issuerBaseUrl: process.env.OIDC_ISSUER_BASE_URL,
     port: parseInt(process.env.PORT, 10) || 3000,
     logLevel: process.env.LOG_LEVEL || 'info',
+  },
+  rsscloud: {
+    enabled: (process.env.RSSCLOUD_ENABLED ?? 'true') === 'true',
+    server: (process.env.RSSCLOUD_SERVER ?? 'https://rpc.rsscloud.io').replace(/\/+$/, ''),
+    timeout: 10000,
   }
 };
+
+// The cloud server has to fetch our OPML to notify subscribers, so a
+// non-routable issuer URL (local dev) means there is nothing to advertise.
+config.rsscloud.reachable = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i
+  .test(config.oidc.issuerBaseUrl ?? '') === false && Boolean(config.oidc.issuerBaseUrl);
+
+config.rsscloud.active = config.rsscloud.enabled && config.rsscloud.reachable;
+config.rsscloud.pleaseNotifyUrl = `${config.rsscloud.server}/pleaseNotify`;
+config.rsscloud.pingUrl = `${config.rsscloud.server}/ping`;
