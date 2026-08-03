@@ -35,6 +35,11 @@ export class GoogleProvider {
       access_type: 'offline',
       scope: config.google.scope,
       include_granted_scopes: true,
+      // Always show the consent screen. Without it Google may reuse an earlier
+      // grant and return a token carrying only that grant's scopes, so adding a
+      // scope fails silently: sign in works, but every API call is rejected
+      // with "Request had insufficient authentication scopes".
+      prompt: 'consent',
       state: state,
     })
   }
