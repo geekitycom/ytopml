@@ -112,7 +112,7 @@ export function createDashboardRouter(google, channelService) {
 		return c.html(render('settings.njk'))
 	})
 
-	router.post('/settings', async (c) => {
+	router.post('/settings', requireUser, async (c) => {
 		logger.debug({ message: 'POST /settings' })
 		const session = c.get('session')
 		const user = session.get('user')

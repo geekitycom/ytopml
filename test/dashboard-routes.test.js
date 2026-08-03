@@ -293,6 +293,28 @@ describe('GET /channels', () => {
 })
 
 describe('POST /settings', () => {
+	// This route deletes an account, so an unauthenticated request must be
+	// turned away by the same guard as every other authenticated route rather
+	// than reaching the handler and crashing on a null user.
+	test('redirects an unauthenticated request instead of destroying anything', async () => {
+		const channels = fakeChannelService([channel('UC1', 'Alpha', true)])
+		const google = { destroy() { throw new Error('should not be called') } }
+		const res = await makeApp({ session: fakeSession(), google, channels }).request('/settings', { method: 'POST' })
+
+		assert.equal(res.status, 302)
+		assert.equal(channels.destroyed, null)
+	})
+
+	test('redirects an expired session instead of destroying anything', async () => {
+		const channels = fakeChannelService([channel('UC1', 'Alpha', true)])
+		const google = { destroy() { throw new Error('should not be called') } }
+		const session = fakeSession({ tokens: EXPIRED_TOKENS, user: USER })
+		const res = await makeApp({ session, google, channels }).request('/settings', { method: 'POST' })
+
+		assert.equal(res.status, 302)
+		assert.equal(channels.destroyed, null)
+	})
+
 	test('destroys the stored channels and signs the user out', async () => {
 		const channels = fakeChannelService([channel('UC1', 'Alpha', true)])
 		let destroyedFromGoogle
