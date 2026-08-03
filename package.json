@@ -5,10 +5,10 @@
   "license": "GPL-3.0-only",
   "version": "1.3.0",
   "author": "Andrew Shell <andrew@andrewshell.org",
-  "homepage": "https://github.com/andrewshell/ytopml",
+  "homepage": "https://github.com/geekitycom/ytopml",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andrewshell/ytopml.git"
+    "url": "git+https://github.com/geekitycom/ytopml.git"
   },
   "scripts": {
     "start": "nodemon app/server.js",
