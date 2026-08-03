@@ -16,6 +16,9 @@ if (config.oidc.logLevel === 'debug') {
 
 export const logger = winston.createLogger({
   level: config.oidc.logLevel,
+  // 'silent' is not a winston level, so it is handled explicitly. Used by the
+  // test suite, which deliberately exercises the paths that log warnings.
+  silent: config.oidc.logLevel === 'silent',
   format: format,
   transports: [new winston.transports.Console()]
 });

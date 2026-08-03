@@ -15,6 +15,7 @@
     "debug": "LOG_LEVEL=debug nodemon app/server.js",
     "css": "tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
     "docker-push": "node build-docker.js",
+    "test": "LOG_LEVEL=silent node --test",
     "prepare": "husky || true"
   },
   "dependencies": {
