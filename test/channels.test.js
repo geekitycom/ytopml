@@ -118,12 +118,27 @@ describe('ChannelService.merge', () => {
 		assert.deepEqual(await service.merge('u1', []), [])
 	})
 
-	// Documents current behaviour, which is almost certainly a bug: an existing
-	// channel keeps whatever title it was first stored with, so a rename on
-	// YouTube never reaches the OPML. See the note in the test report.
-	test('does NOT update the title of a channel it already knows about', async () => {
+	test('updates the title of a channel it already knows about', async () => {
 		await service.save('u1', [channel('UC1', 'Old Name', { selected: true })])
 		const merged = await service.merge('u1', [channel('UC1', 'New Name')])
-		assert.equal(merged[0].title, 'Old Name')
+		assert.equal(merged[0].title, 'New Name')
+	})
+
+	test('keeps the user selection when refreshing a channel', async () => {
+		await service.save('u1', [channel('UC1', 'Old Name', { selected: true })])
+		const merged = await service.merge('u1', [channel('UC1', 'New Name')])
+		assert.equal(merged[0].selected, true)
+	})
+
+	test('keeps a deselected channel deselected when refreshing it', async () => {
+		await service.save('u1', [channel('UC1', 'Old Name', { selected: false })])
+		const merged = await service.merge('u1', [channel('UC1', 'New Name')])
+		assert.equal(merged[0].selected, false)
+	})
+
+	test('refreshes the other metadata youtube supplies', async () => {
+		await service.save('u1', [channel('UC1', 'Alpha', { selected: true, thumbnail: 'https://img/old.jpg' })])
+		const merged = await service.merge('u1', [channel('UC1', 'Alpha', { thumbnail: 'https://img/new.jpg' })])
+		assert.equal(merged[0].thumbnail, 'https://img/new.jpg')
 	})
 })

@@ -24,6 +24,9 @@ function channelIndex(channels) {
 function mergeChannel(index, channel) {
 	if (index._delete.has(channel.id)) {
 		index._delete.delete(channel.id)
+		// Already subscribed: take the fresh metadata from YouTube, since titles
+		// and thumbnails change, but keep whatever the user chose to publish.
+		index[channel.id] = { ...channel, selected: index[channel.id].selected }
 	} else {
 		index[channel.id] = channel
 		index[channel.id].selected = false
