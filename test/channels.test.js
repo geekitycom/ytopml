@@ -108,9 +108,20 @@ describe('ChannelService.merge', () => {
 		assert.equal(merged[0].selected, true)
 	})
 
-	test('returns an empty list when the fresh list is not an array', async () => {
+	// Reporting an empty list here is dangerous: the caller saves whatever merge
+	// returns, so a bad fetch would silently overwrite the user's stored
+	// channels and selections. Failing loudly leaves the stored file untouched.
+	test('throws when the fresh list is not an array', async () => {
 		await service.save('u1', [channel('UC1', 'Alpha', { selected: true })])
-		assert.deepEqual(await service.merge('u1', null), [])
+		await assert.rejects(() => service.merge('u1', null))
+	})
+
+	test('leaves the stored file untouched when merge fails', async () => {
+		await service.save('u1', [channel('UC1', 'Alpha', { selected: true })])
+		await service.merge('u1', undefined).catch(() => {})
+		const stored = await service.get('u1')
+		assert.equal(stored.length, 1)
+		assert.equal(stored[0].selected, true)
 	})
 
 	test('removes every stored channel when the fresh list is empty', async () => {

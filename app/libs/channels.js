@@ -63,22 +63,22 @@ export class ChannelService {
 		}
 	}
 
+	// Errors deliberately propagate. The caller saves whatever this returns, so
+	// quietly reporting an empty list on failure would overwrite the user's
+	// stored channels and their selections. Throwing leaves the file untouched.
 	async merge(id, fresh) {
-		try {
-			const channels = await this.get(id)
-			if (Array.isArray(fresh) && Array.isArray(channels)) {
-				const index = channelIndex(channels)
-				fresh.forEach(mergeChannel.bind(null, index));
-				index._delete.forEach((id) => {
-					delete index[id]
-				})
-				delete index._delete
-				return Object.values(index)
-			}
-			return []
-		} catch (error) {
-			return []
+		if (!Array.isArray(fresh)) {
+			throw new TypeError('merge requires an array of fresh channels')
 		}
+
+		const channels = await this.get(id)
+		const index = channelIndex(channels)
+		fresh.forEach(mergeChannel.bind(null, index));
+		index._delete.forEach((id) => {
+			delete index[id]
+		})
+		delete index._delete
+		return Object.values(index)
 	}
 
 	async save(id, channels) {
