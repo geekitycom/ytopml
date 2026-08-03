@@ -2,7 +2,7 @@ import { test, describe, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 
 import { config } from '../app/config.js'
-import { ping, opmlUrl } from '../app/libs/rsscloud.js'
+import { ping, opmlUrl, pingIfChanged } from '../app/libs/rsscloud.js'
 
 let savedRsscloud
 let savedIssuer
@@ -102,5 +102,35 @@ describe('ping', () => {
 		stubFetch(() => jsonResponse({ success: true }))
 		await ping('user123')
 		assert.ok(calls[0].options.signal, 'expected an AbortSignal on the request')
+	})
+})
+
+describe('pingIfChanged', () => {
+	const BEFORE = '<opml><body><outline text="Alpha"/></body></opml>'
+	const SAME = '<opml><body><outline text="Alpha"/></body></opml>'
+	const DIFFERENT = '<opml><body/></opml>'
+
+	// pingIfChanged does not await the ping, so let the microtask queue drain.
+	const settle = () => new Promise(resolve => setImmediate(resolve))
+
+	test('does not ping when the rendered opml is unchanged', async () => {
+		stubFetch(() => jsonResponse({ success: true }))
+		assert.equal(pingIfChanged('u1', BEFORE, SAME), false)
+		await settle()
+		assert.equal(calls.length, 0)
+	})
+
+	test('pings when the rendered opml changed', async () => {
+		stubFetch(() => jsonResponse({ success: true }))
+		assert.equal(pingIfChanged('u1', BEFORE, DIFFERENT), true)
+		await settle()
+		assert.equal(calls.length, 1)
+		assert.equal(new URLSearchParams(calls[0].options.body).get('url'), 'https://ytopml.example.com/u1.opml')
+	})
+
+	test('does not throw when the ping itself fails', async () => {
+		stubFetch(() => { throw new TypeError('fetch failed') })
+		assert.doesNotThrow(() => pingIfChanged('u1', BEFORE, DIFFERENT))
+		await settle()
 	})
 })

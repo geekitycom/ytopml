@@ -10,36 +10,47 @@ try {
   }
 }
 
-export const config = {
-  site: {
-    name: process.env.SITE_NAME ?? 'YT OPML',
-    description: process.env.SITE_DESCRIPTION ?? 'Generate an OPML subscription list of your YouTube subscriptions.',
-    year: new Date().getFullYear(),
-  },
-  google: {
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    scope: ['openid', 'https://www.googleapis.com/auth/youtube.readonly'],
-    rateLimit: 300000, // 5 minutes
-  },
-  oidc: {
-    cookieSecret: process.env.COOKIE_SECRET ?? crypto.randomBytes(32).toString('hex'),
-    issuerBaseUrl: process.env.OIDC_ISSUER_BASE_URL,
-    port: parseInt(process.env.PORT, 10) || 3000,
-    logLevel: process.env.LOG_LEVEL || 'info',
-  },
-  rsscloud: {
-    enabled: (process.env.RSSCLOUD_ENABLED ?? 'true') === 'true',
-    server: (process.env.RSSCLOUD_SERVER ?? 'https://rpc.rsscloud.io').replace(/\/+$/, ''),
-    timeout: 10000,
-  }
-};
-
 // The cloud server has to fetch our OPML to notify subscribers, so a
 // non-routable issuer URL (local dev) means there is nothing to advertise.
-config.rsscloud.reachable = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i
-  .test(config.oidc.issuerBaseUrl ?? '') === false && Boolean(config.oidc.issuerBaseUrl);
+function isReachable(issuerBaseUrl) {
+  if (!issuerBaseUrl) {
+    return false;
+  }
+  return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/i.test(issuerBaseUrl) === false;
+}
 
-config.rsscloud.active = config.rsscloud.enabled && config.rsscloud.reachable;
-config.rsscloud.pleaseNotifyUrl = `${config.rsscloud.server}/pleaseNotify`;
-config.rsscloud.pingUrl = `${config.rsscloud.server}/ping`;
+export function createConfig(env = process.env) {
+  const config = {
+    site: {
+      name: env.SITE_NAME ?? 'YT OPML',
+      description: env.SITE_DESCRIPTION ?? 'Generate an OPML subscription list of your YouTube subscriptions.',
+      year: new Date().getFullYear(),
+    },
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      scope: ['openid', 'https://www.googleapis.com/auth/youtube.readonly'],
+      rateLimit: 300000, // 5 minutes
+    },
+    oidc: {
+      cookieSecret: env.COOKIE_SECRET ?? crypto.randomBytes(32).toString('hex'),
+      issuerBaseUrl: env.OIDC_ISSUER_BASE_URL,
+      port: parseInt(env.PORT, 10) || 3000,
+      logLevel: env.LOG_LEVEL || 'info',
+    },
+    rsscloud: {
+      enabled: (env.RSSCLOUD_ENABLED ?? 'true') === 'true',
+      server: (env.RSSCLOUD_SERVER ?? 'https://rpc.rsscloud.io').replace(/\/+$/, ''),
+      timeout: 10000,
+    }
+  };
+
+  config.rsscloud.reachable = isReachable(config.oidc.issuerBaseUrl);
+  config.rsscloud.active = config.rsscloud.enabled && config.rsscloud.reachable;
+  config.rsscloud.pleaseNotifyUrl = `${config.rsscloud.server}/pleaseNotify`;
+  config.rsscloud.pingUrl = `${config.rsscloud.server}/ping`;
+
+  return config;
+}
+
+export const config = createConfig();

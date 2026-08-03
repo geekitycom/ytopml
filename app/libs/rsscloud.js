@@ -7,6 +7,22 @@ export function opmlUrl(sub) {
 	return `${config.oidc.issuerBaseUrl}/${sub}.opml`
 }
 
+// Only a change to the published OPML is worth a ping — selecting a channel
+// that was already selected, or picking up a new unselected subscription,
+// leaves the file identical.
+//
+// before and after are both rendered OPML documents, not channel lists. Callers
+// mutate channel objects in place while saving, so a list captured beforehand
+// would already reflect the change and nothing would ever look different.
+export function pingIfChanged(sub, before, after) {
+	if (before === after) {
+		return false
+	}
+	// Deliberately not awaited: the cloud server must not slow down a save.
+	ping(sub)
+	return true
+}
+
 // Tell the cloud server an OPML changed so it can notify subscribers.
 // Fire and forget: a cloud that is down or slow must never break a save.
 export async function ping(sub) {

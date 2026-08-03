@@ -2,20 +2,15 @@ import { Hono } from 'hono'
 import { render } from '../libs/render.js'
 import { checkExpires, requireUser } from '../libs/auth.js'
 import { toOpml } from '../libs/opml.js'
-import { ping } from '../libs/rsscloud.js'
+import { pingIfChanged } from '../libs/rsscloud.js'
 
 import { config } from '../config.js'
 import { logger } from '../logger.js'
 
-// Only a change to the published OPML is worth a ping — selecting a channel
-// that was already selected, or picking up a new unselected subscription,
-// leaves the file identical.
-function pingIfChanged(sub, before, after) {
-	if (before === toOpml(after)) {
-		return
-	}
-	// Deliberately not awaited: the cloud server must not slow down a save.
-	ping(sub)
+// The cloud endpoint to advertise in generated OPML, or null when rssCloud is
+// not active for this deployment.
+function cloudUrl() {
+	return config.rsscloud.active ? config.rsscloud.pleaseNotifyUrl : null
 }
 
 export function createDashboardRouter(google, channelService) {
@@ -53,11 +48,11 @@ export function createDashboardRouter(google, channelService) {
 		let channels = []
 
 		try {
-			const before = toOpml(await channelService.get(user.sub))
+			const before = toOpml(await channelService.get(user.sub), cloudUrl())
 			const fresh = await google.getChannels(tokens)
 			channels = await channelService.merge(user.sub, fresh)
 			await channelService.save(user.sub, channels)
-			pingIfChanged(user.sub, before, channels)
+			pingIfChanged(user.sub, before, toOpml(channels, cloudUrl()))
 		} catch (error) {
 			channels = await channelService.get(user.sub)
 		}
@@ -92,14 +87,14 @@ export function createDashboardRouter(google, channelService) {
 			}
 
 			const channels = await channelService.get(user.sub)
-			const before = toOpml(channels)
+			const before = toOpml(channels, cloudUrl())
 			channels.forEach(channel => {
 				if (typeof selected[channel.id] === 'boolean') {
 					channel.selected = selected[channel.id]
 				}
 			})
 			await channelService.save(user.sub, channels)
-			pingIfChanged(user.sub, before, channels)
+			pingIfChanged(user.sub, before, toOpml(channels, cloudUrl()))
 		} catch (error) {
 			logger.error(error)
 			return c.json({ error: 'Failed to save channels' }, 500)
@@ -119,11 +114,11 @@ export function createDashboardRouter(google, channelService) {
 		const user = session.get('user')
 
 		try {
-			const before = toOpml(await channelService.get(user.sub))
+			const before = toOpml(await channelService.get(user.sub), cloudUrl())
 			await channelService.destroy(user.sub)
 			google.destroy(user.sub)
 			// The list is now empty; subscribers should be told it emptied.
-			pingIfChanged(user.sub, before, [])
+			pingIfChanged(user.sub, before, toOpml([], cloudUrl()))
 			return c.redirect(`${config.oidc.issuerBaseUrl}/auth/logout`)
 		} catch (error) {
 			logger.error(error)
@@ -141,7 +136,7 @@ export function createDashboardRouter(google, channelService) {
 		})
 		const channels = await channelService.get(sub)
 		logger.debug('opml', { sub, channels })
-		return c.text(toOpml(channels), 200, { 'Content-Type': 'text/xml' })
+		return c.text(toOpml(channels, cloudUrl()), 200, { 'Content-Type': 'text/xml' })
 	})
 
 	return router;

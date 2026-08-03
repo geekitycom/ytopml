@@ -1,10 +1,11 @@
 import { create } from 'xmlbuilder2';
-import { config } from '../config.js'
 import { logger } from '../logger.js'
 
 const SOURCE_NS = 'https://source.scripting.com/';
 
-export function toOpml(channels) {
+// cloudUrl is the rssCloud pleaseNotify endpoint to advertise, or null to
+// advertise none. Kept as an argument so rendering stays independent of config.
+export function toOpml(channels, cloudUrl = null) {
 	const selectedChannels = channels.filter(channel => channel.selected);
 	logger.debug('toOpml', { selectedChannels })
 
@@ -16,8 +17,8 @@ export function toOpml(channels) {
 
 	// rssCloud: subscribers register with this server to be told the moment
 	// this list changes, instead of polling. See https://source.scripting.com/
-	if (config.rsscloud.active) {
-		head.ele('source:cloud').txt(config.rsscloud.pleaseNotifyUrl).up();
+	if (cloudUrl) {
+		head.ele('source:cloud').txt(cloudUrl).up();
 	}
 
 	const doc = root.ele('body');
