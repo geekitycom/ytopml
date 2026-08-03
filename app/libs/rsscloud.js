@@ -45,11 +45,19 @@ export async function ping(sub) {
 		})
 
 		// The server answers 200 with success:false for soft failures, so the
-		// body matters as much as the status.
-		const result = await response.json().catch(() => ({}))
+		// body matters as much as the status. It also serves text/xml unless our
+		// Accept header survives the trip, so a body we cannot read might be an
+		// xml error saying success="false" — never treat that as a success.
+		const result = await response.json().catch(() => null)
+		const readable = result !== null && typeof result === 'object'
 
-		if (!response.ok || result.success === false) {
-			logger.warn({ message: 'rsscloud ping failed', url, status: response.status, msg: result.msg })
+		if (!response.ok || !readable || result.success === false) {
+			logger.warn({
+				message: 'rsscloud ping failed',
+				url,
+				status: response.status,
+				msg: readable ? result.msg : 'response body could not be read as json',
+			})
 			return false
 		}
 

@@ -84,12 +84,18 @@ describe('ping', () => {
 		assert.equal(await ping('user123'), false)
 	})
 
-	// Documents current behaviour, which is a weakness: the cloud server sends
-	// text/xml unless Accept is honoured, and an unparseable body is reported as
-	// a success even if that xml said success="false". See the test report.
-	test('treats an unparseable body on a 200 as a success', async () => {
+	// The cloud server sends text/xml unless Accept is honoured, so a body we
+	// cannot parse may well be an xml error saying success="false". Reporting
+	// that as a successful ping would hide every failure behind a proxy that
+	// strips the header.
+	test('treats an unparseable body on a 200 as a failure', async () => {
 		stubFetch(() => ({ ok: true, status: 200, json: async () => { throw new SyntaxError('not json') } }))
-		assert.equal(await ping('user123'), true)
+		assert.equal(await ping('user123'), false)
+	})
+
+	test('treats a body that is not an object as a failure', async () => {
+		stubFetch(() => jsonResponse(null))
+		assert.equal(await ping('user123'), false)
 	})
 
 	test('swallows a network error rather than throwing', async () => {
