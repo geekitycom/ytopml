@@ -54,7 +54,11 @@ export function createDashboardRouter(google, channelService) {
 			await channelService.save(user.sub, channels)
 			pingIfChanged(user.sub, before, toOpml(channels, cloudUrl()))
 		} catch (error) {
-			channels = await channelService.get(user.sub)
+			// A failed sync still renders, using whatever was stored last. Say so
+			// loudly: silently serving a stale list is indistinguishable from a
+			// healthy one, which hides an expired grant or a missing scope.
+			logger.warn({ message: 'channel sync failed, serving stored channels', sub: user?.sub, error: error.message })
+			channels = await channelService.get(user?.sub)
 		}
 
 		// Sort: selected first, then alphabetically by title

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { Hono } from 'hono'
 
 import { createDashboardRouter } from '../app/routes/dashboard.js'
+import { logger } from '../app/logger.js'
 
 // A stand-in for the hono-sessions session object, which the routes and the
 // auth middleware only ever read through get()/deleteSession().
@@ -256,6 +257,25 @@ describe('GET /channels', () => {
 		assert.equal(res.status, 200)
 		assert.equal(channels.merged.sub, 'user123')
 		assert.equal(channels.saved.sub, 'user123')
+	})
+
+	test('warns when it falls back, so a broken sync is not silent', async () => {
+		const warnings = []
+		const realWarn = logger.warn
+		logger.warn = (...args) => { warnings.push(args[0]) }
+
+		try {
+			const channels = fakeChannelService([channel('UC1', 'Alpha', true)])
+			const google = { async getChannels() { throw new Error('insufficient authentication scopes') } }
+			const session = fakeSession({ tokens: LIVE_TOKENS, user: USER })
+
+			await makeApp({ session, google, channels }).request('/channels')
+		} finally {
+			logger.warn = realWarn
+		}
+
+		assert.equal(warnings.length, 1, 'expected exactly one warning about the failed sync')
+		assert.match(JSON.stringify(warnings[0]), /insufficient authentication scopes/)
 	})
 
 	test('falls back to stored channels when the google call fails', async () => {
