@@ -19,22 +19,22 @@
     "prepare": "husky || true"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.7",
-    "google-auth-library": "^10.5.0",
+    "@hono/node-server": "^1.19.17",
+    "google-auth-library": "^10.9.1",
     "googleapis": "^169.0.0",
-    "hono": "^4.6.16",
-    "hono-sessions": "^0.8.0",
+    "hono": "^4.13.13",
+    "hono-sessions": "^0.8.1",
     "nunjucks": "^3.2.4",
-    "winston": "^3.17.0",
+    "winston": "^3.19.0",
     "xmlbuilder2": "^4.0.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.2.1",
-    "@commitlint/config-conventional": "^21.2.0",
-    "@tailwindcss/cli": "^4.1.18",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@tailwindcss/cli": "^4.3.3",
     "husky": "^9.1.7",
-    "nodemon": "^3.1.9",
-    "tailwindcss": "^4.1.18"
+    "nodemon": "^3.1.14",
+    "tailwindcss": "^4.3.3"
   },
   "nodemonConfig": {
     "ignore": [
@@ -44,7 +44,7 @@
   },
   "packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa",
   "engines": {
-    "node": ">=24"
+    "node": ">=24.22.1"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
