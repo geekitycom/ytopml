@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/geekitycom/ytopml/compare/v1.4.1...v1.4.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** patch audit vulnerabilities and require Node 24.22.1 ([c8b4549](https://github.com/geekitycom/ytopml/commit/c8b45498d44e8319907d457295fd240466b872b3))
+
 ## [1.4.1](https://github.com/geekitycom/ytopml/compare/v1.4.0...v1.4.1) (2026-08-03)
 
 
